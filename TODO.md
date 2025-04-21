@@ -1,7 +1,7 @@
 # TODO List for Celestial Odyssey Launcher
 
 ## General
-- [ ] Set up a clean project structure.
+- [x] Set up a clean project structure.
 - [ ] Add a README file with project details.
 
 ## UI
