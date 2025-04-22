@@ -24,7 +24,7 @@ class Widgets:
         except requests.RequestException as e:
             changelog_content = f"Error fetching CHANGELOG.md: {e}"
 
-        news_textbox = ctk.CTkTextbox(self.app, width=600, height=300)
+        news_textbox = ctk.CTkTextbox(self.app, width=512, height=288, corner_radius=40, )
         news_textbox.insert("1.0", changelog_content)
         news_textbox.place(relx=0.5, rely=0.5, anchor="center")
         news_textbox.configure(state="disabled")  # Make it read-only
