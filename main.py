@@ -9,22 +9,42 @@ import sys
 import requests
 import configparser
 
-# === Launcher Widgets ===
-class Widgets:
+# === Launcher Components ===
+
+class Widgets: # UI ELEMENTS
     def __init__(self, app):
         self.app = app
         self.title()
-        self.gameinfo()
         self.changelog()
-        self.launch_button()
 
     def title(self):  # TITLE
         title_label = ctk.CTkLabel(self.app, text="Welcome to Celestial Odyssey Launcher", font=("Arial", 20))
         title_label.place(relx=0.5, rely=0.1, anchor="center")
 
+    def changelog(self):  # NEWS PANEL
+        try:
+            response = requests.get("https://raw.githubusercontent.com/Vhaultyr/Celestial-Odyssey-Launcher/refs/heads/main/CHANGELOG.md")
+            if response.status_code == 200:
+                changelog_content = response.text
+            else:
+                changelog_content = "Failed to fetch CHANGELOG.md from GitHub."
+        except requests.RequestException as e:
+            changelog_content = f"Error fetching CHANGELOG.md: {e}"
+
+        news_textbox = ctk.CTkTextbox(self.app, width=400, height=250, wrap="word")
+        news_textbox.insert("1.0", changelog_content)
+        news_textbox.place(relx=0.25, rely=0.45, anchor="center")
+        news_textbox.configure(state="disabled")  # Make it read-only
+
+class Utils: # UTILITY FUNCTIONS
+    def __init__(self, app):
+        self.app = app
+        self.gameinfo()
+        self.launch()
+
     def gameinfo(self):  # GAME INFO PANEL
-        # Create a frame to contain all game info widgets
-        gameinfo_frame = ctk.CTkFrame(self.app, width=300, height=400, corner_radius=10)
+    # Create a frame to contain all game info widgets
+        gameinfo_frame = ctk.CTkFrame(self.app, width=500, height=400)
         gameinfo_frame.place(relx=0.8, rely=0.5, anchor="center")
 
         # Panel Title
@@ -111,27 +131,9 @@ class Widgets:
             config.write(configfile)
         mb.showinfo("Settings Saved", "Your settings have been saved successfully!")
 
-    def changelog(self):  # NEWS PANEL
-        try:
-            response = requests.get("https://raw.githubusercontent.com/Vhaultyr/Celestial-Odyssey-Launcher/refs/heads/main/CHANGELOG.md")
-            if response.status_code == 200:
-                changelog_content = response.text
-            else:
-                changelog_content = "Failed to fetch CHANGELOG.md from GitHub."
-        except requests.RequestException as e:
-            changelog_content = f"Error fetching CHANGELOG.md: {e}"
-
-        news_textbox = ctk.CTkTextbox(self.app, width=400, height=250, wrap="word")
-        news_textbox.insert("1.0", changelog_content)
-        news_textbox.place(relx=0.25, rely=0.45, anchor="center")
-        news_textbox.configure(state="disabled")  # Make it read-only
-
-    def launch_button(self):  # LAUNCH BUTTON
-        launch_button = ctk.CTkButton(self.app, text="Launch Game", command=self.launch_game)
+    def launch(self):  # LAUNCH BUTTON
+        launch_button = ctk.CTkButton(self.app, text="Launch Game", command=self.launch)
         launch_button.place(relx=0.5, rely=0.9, anchor="center")
-
-    def launch_game(self):
-        print("Launching the game...")  # Replace with actual game launch logic
 
 # === Main Application Class ===
 class CelestialOdysseyLauncher:
@@ -142,6 +144,7 @@ class CelestialOdysseyLauncher:
         self.app.resizable(width=False, height=False)
         self.app.iconbitmap("assets/icon.ico")
         self.setup_background()
+        self.init()
 
     def setup_background(self):
         # Set the background image
@@ -149,7 +152,9 @@ class CelestialOdysseyLauncher:
         bg_label = ctk.CTkLabel(self.app, image=bg_image, text="")
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        # Initialize the UI
+    def init(self):
+        # Initialize Components
+        self.utils = Utils(self.app)
         self.ui = Widgets(self.app)
 
     def run(self):
