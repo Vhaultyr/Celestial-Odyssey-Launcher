@@ -16,7 +16,7 @@ class Widgets:
 
         # NEWS PANEL
         try:
-            response = requests.get("https://raw.githubusercontent.com/your-username/your-repo/main/CHANGELOG.md")
+            response = requests.get("https://raw.githubusercontent.com/Vhaultyr/Celestial-Odyssey-Launcher/main/CHANGELOG.md")
             if response.status_code == 200:
                 changelog_content = response.text
             else:
