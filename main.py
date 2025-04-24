@@ -1,5 +1,8 @@
 import customtkinter as ctk
 import tkinter as tk
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import Qt
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
 import configparser
@@ -18,8 +21,13 @@ class Widgets: # UI ELEMENTS
         self.changelog()
 
     def title(self):  # TITLE
-        title_label = ctk.CTkLabel(self.app, text="Welcome to Celestial Odyssey Launcher", font=("Arial", 20))
-        title_label.place(relx=0.5, rely=0.1, anchor="center")
+        # Create a canvas to overlay text on the background
+        title_label = QLabel(self)
+        title_label.setText("Celestial Odyssey Launcher")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("font-size: 40px; font-family: Blockblueprint; color: white;")
+        title_label.setGeometry(0, 0, 1024, 60)
+        title_label.setAttribute(Qt.WA_TranslucentBackground)
 
     def changelog(self):  # NEWS PANEL
         try:
