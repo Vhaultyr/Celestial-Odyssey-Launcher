@@ -214,16 +214,17 @@ class MainWindow(QMainWindow):
         button_container = QWidget(self)
         button_container.setGeometry(900, 200, 300, 350)  # Positioned on the right side
         button_container.setStyleSheet("background: transparent;")  # Transparent background
-    
+
         # Create a vertical layout for the buttons
         layout = QVBoxLayout(button_container)
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)  # Align buttons to the top
-        layout.setSpacing(40)  # Space between buttons
-    
+        layout.setSpacing(30)  # Space between buttons
+
         # Create the buttons
         mods_button = QPushButton("Mods", button_container)
         packs_button = QPushButton("Packs", button_container)
         about_button = QPushButton("About Us", button_container)
+        update_play_button = QPushButton("Play", button_container)
     
         # Set button styles
         for button in [mods_button, packs_button, about_button]:
@@ -234,19 +235,44 @@ class MainWindow(QMainWindow):
                 color: #F5F5DC;
                 font-family: 'Blockblueprint';
                 border: #060034;
-                font-size: 60px;
+                font-size: 40px;
                 }
                 QPushButton:hover {
                     background-color: #F5F5DC;
                     color: #2E2E2E;
                 }
             """)
-            layout.addWidget(button)  # Add buttons to the layout
+        for button in [update_play_button]:
+            button.setStyleSheet("""
+                QPushButton {
+                background-color: #c5405f;
+                font: bold;
+                color: #F5F5DC;
+                font-family: 'Blockblueprint';
+                border: #060034;
+                font-size: 50px;
+                }
+                QPushButton:hover {
+                    background-color: #F5F5DC;
+                    color: #2E2E2E;
+                }
+            """)  
+            # First 3 buttons are the same size
+            layout.addWidget(mods_button)
+            layout.addWidget(packs_button)
+            layout.addWidget(about_button)
+
+            # Spacer
+            layout.addSpacing(60)
+
+            # Last button
+            layout.addWidget(update_play_button)
     
         # Example: Connect buttons to actions
         mods_button.clicked.connect(lambda: print("Mods Button clicked"))
         packs_button.clicked.connect(lambda: print("Packs Button clicked"))
         about_button.clicked.connect(lambda: print("About Us clicked"))
+        update_play_button.clicked.connect(lambda: print("Update/Play clicked"))
 
 
 if __name__ == "__main__":
