@@ -1,9 +1,9 @@
-<h2> Celestial Odyssey Launcher v0.1.0a 🔮 </h2>
+<h3> Celestial Odyssey Launcher v0.1.0a 🔮 </h3>
 
 The changelog seems to be finally coming together! Trying to test how the app will handle emoji's, multiple text bodies, and I'm also just using this for the moment as a journal to document my accomplishment of somehow teaching myself how to do all of this craziness 😆
 
 
-<h2> Test Changelog Dump 📜 </h2>
+<h3> Test Changelog Dump 📜 </h3>
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
