@@ -1,6 +1,6 @@
 import sys
 from PyQt6 import QtGui
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QGroupBox, QVBoxLayout, QWidget, QPushButton
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QGroupBox, QVBoxLayout, QWidget, QPushButton, QLayout
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea
 import requests
@@ -12,16 +12,17 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 1280, 720)
         self.setMinimumSize(1280, 720)
         self.setMaximumSize(1280, 720)
+        self.background()
 
         # === Utils ===
         self.oldPos = None  # For Window Movement
         self.dragMainWindow()
+        self.app_settings_button() # Settings Menu + Configuration
+        self.system_buttons()
 
         # === UI Widgets ===
-
-        self.background()
         self.news_box()
-        self.system_buttons()
+        self.game_buttons()
 
         # === DEBUG TOOL ===
         # Move the preview to the 2nd screen while testing
@@ -49,11 +50,12 @@ class MainWindow(QMainWindow):
 
         title = QLabel(self)
         title.setText("Celestial Odyssey")
-        title.setStyleSheet("" \
-        "color: #F5F5DC; " \
-        "font: 70px;"
-        "font-family: 'Blockblueprint';" \
-        )
+        title.setStyleSheet("""
+        color: #F5F5DC;
+        font: bold;
+        font: 70px;
+        font-family: 'Blockblueprint';
+        """)
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setGeometry(0, 10, 1280, 100)
         title.setWordWrap(True)
@@ -63,10 +65,12 @@ class MainWindow(QMainWindow):
         self.minimize_button.setGeometry(1200, 10, 30, 30)
         self.minimize_button.setStyleSheet("""
             QPushButton {
-                background-color: #2E2E2E;
+                background-color: #c5405f;
+                font: bold;
                 color: #F5F5DC;
-                border: none;
-                font-size: 20px;
+                font-family: 'Blockblueprint';
+                border: #060034;
+                font-size: 30px;
             }
             QPushButton:hover {
                 background-color: #F5F5DC;
@@ -77,10 +81,12 @@ class MainWindow(QMainWindow):
         self.close_button.setGeometry(1240, 10, 30, 30)
         self.close_button.setStyleSheet("""
             QPushButton {
-                background-color: #2E2E2E;
+                background-color: #c5405f;
+                font: bold;
                 color: #F5F5DC;
-                border: none;
-                font-size: 20px;
+                font-family: 'Blockblueprint';
+                border: #060034;
+                font-size: 30px;
             }
             QPushButton:hover {
                 background-color: #F5F5DC;
@@ -95,6 +101,7 @@ class MainWindow(QMainWindow):
         news.setStyleSheet("""
             QGroupBox {
             color: #F5F5DC;
+            font: bold;
             font-size: 40px;
             font-family: 'Blockblueprint';
             border: 1px solid gray;
@@ -108,10 +115,10 @@ class MainWindow(QMainWindow):
             padding: 0 10px;
             }
         """)
-        news.setGeometry(60, 130, 420, 420)
+        news.setGeometry(60, 130, 620, 420)
 
         scroll_area = QScrollArea(news)
-        scroll_area.setGeometry(5, 40, 405, 365)
+        scroll_area.setGeometry(5, 40, 605, 365)
         scroll_area.setWidgetResizable(True)
         scroll_area.setStyleSheet("""
             QScrollArea {
@@ -184,6 +191,62 @@ class MainWindow(QMainWindow):
         self.mouseMoveEvent = mouseMoveEvent
         self.mouseReleaseEvent = mouseReleaseEvent
         
+    def app_settings_button(self):
+        self.open_settings = QPushButton("Settings", self)
+        self.open_settings.setGeometry(1058, 10, 130, 30)
+        self.open_settings.setStyleSheet("""
+            QPushButton {
+                background-color: #c5405f;
+                font: bold;
+                color: #F5F5DC;
+                font-family: 'Blockblueprint';
+                border: #060034;
+                font-size: 30px;
+            }
+            QPushButton:hover {
+                background-color: #F5F5DC;
+                color: #2E2E2E;
+            }
+""")
+
+    def game_buttons(self):
+        # Create a container widget for the buttons
+        button_container = QWidget(self)
+        button_container.setGeometry(900, 200, 300, 350)  # Positioned on the right side
+        button_container.setStyleSheet("background: transparent;")  # Transparent background
+    
+        # Create a vertical layout for the buttons
+        layout = QVBoxLayout(button_container)
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)  # Align buttons to the top
+        layout.setSpacing(40)  # Space between buttons
+    
+        # Create the buttons
+        mods_button = QPushButton("Mods", button_container)
+        packs_button = QPushButton("Packs", button_container)
+        about_button = QPushButton("About Us", button_container)
+    
+        # Set button styles
+        for button in [mods_button, packs_button, about_button]:
+            button.setStyleSheet("""
+                QPushButton {
+                background-color: #c5405f;
+                font: bold;
+                color: #F5F5DC;
+                font-family: 'Blockblueprint';
+                border: #060034;
+                font-size: 60px;
+                }
+                QPushButton:hover {
+                    background-color: #F5F5DC;
+                    color: #2E2E2E;
+                }
+            """)
+            layout.addWidget(button)  # Add buttons to the layout
+    
+        # Example: Connect buttons to actions
+        mods_button.clicked.connect(lambda: print("Mods Button clicked"))
+        packs_button.clicked.connect(lambda: print("Packs Button clicked"))
+        about_button.clicked.connect(lambda: print("About Us clicked"))
 
 
 if __name__ == "__main__":
