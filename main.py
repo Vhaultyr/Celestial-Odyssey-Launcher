@@ -3,6 +3,7 @@ from PyQt6 import QtGui
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QGroupBox, QVBoxLayout, QWidget
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea
+import requests
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -101,7 +102,15 @@ class MainWindow(QMainWindow):
 
         layout = QVBoxLayout(scroll_content)
         scroll_label = QLabel(scroll_content)
-        scroll_label.setText("This is a scrollable text box.\n" * 80)
+        try:
+            url = "https://raw.githubusercontent.com/Vhaultyr/Celestial-Odyssey-Launcher/refs/heads/main/CHANGELOG.md"
+            response = requests.get(url)
+            response.raise_for_status()  # Raise an error for bad status codes
+            changelog_text = response.text
+        except requests.exceptions.RequestException as e:
+            changelog_text = f"Failed to load changelog: {e}"
+
+        scroll_label.setText(changelog_text)
         scroll_label.setWordWrap(True)
         scroll_label.setStyleSheet("background: transparent;")
 
