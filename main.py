@@ -1,6 +1,6 @@
 import sys
 from PyQt6 import QtGui
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QGroupBox, QVBoxLayout, QWidget, QPushButton, QLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QGroupBox, QVBoxLayout, QWidget, QPushButton, QProgressBar, QHBoxLayout
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea
 import requests
@@ -23,6 +23,9 @@ class MainWindow(QMainWindow):
         # === UI Widgets ===
         self.news_box()
         self.game_buttons()
+        self.play_or_update()
+        self.progress_bar()
+        self.socials()
 
         # === DEBUG TOOL ===
         # Move the preview to the 2nd screen while testing
@@ -212,37 +215,21 @@ class MainWindow(QMainWindow):
     def game_buttons(self):
         # Create a container widget for the buttons
         button_container = QWidget(self)
-        button_container.setGeometry(900, 200, 300, 350)  # Positioned on the right side
+        button_container.setGeometry(850, 200, 300, 600)  # Positioned on the right side
         button_container.setStyleSheet("background: transparent;")  # Transparent background
 
         # Create a vertical layout for the buttons
         layout = QVBoxLayout(button_container)
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)  # Align buttons to the top
-        layout.setSpacing(30)  # Space between buttons
+        layout.setSpacing(60)  # Space between buttons
 
         # Create the buttons
         mods_button = QPushButton("Mods", button_container)
         packs_button = QPushButton("Packs", button_container)
         about_button = QPushButton("About Us", button_container)
-        update_play_button = QPushButton("Play", button_container)
     
         # Set button styles
         for button in [mods_button, packs_button, about_button]:
-            button.setStyleSheet("""
-                QPushButton {
-                background-color: #c5405f;
-                font: bold;
-                color: #F5F5DC;
-                font-family: 'Blockblueprint';
-                border: #060034;
-                font-size: 40px;
-                }
-                QPushButton:hover {
-                    background-color: #F5F5DC;
-                    color: #2E2E2E;
-                }
-            """)
-        for button in [update_play_button]:
             button.setStyleSheet("""
                 QPushButton {
                 background-color: #c5405f;
@@ -256,23 +243,80 @@ class MainWindow(QMainWindow):
                     background-color: #F5F5DC;
                     color: #2E2E2E;
                 }
-            """)  
-            # First 3 buttons are the same size
+            """)
+            # Add Buttons to BoxLayout
             layout.addWidget(mods_button)
             layout.addWidget(packs_button)
             layout.addWidget(about_button)
-
-            # Spacer
-            layout.addSpacing(60)
-
-            # Last button
-            layout.addWidget(update_play_button)
     
         # Example: Connect buttons to actions
         mods_button.clicked.connect(lambda: print("Mods Button clicked"))
         packs_button.clicked.connect(lambda: print("Packs Button clicked"))
         about_button.clicked.connect(lambda: print("About Us clicked"))
-        update_play_button.clicked.connect(lambda: print("Update/Play clicked"))
+
+    def play_or_update(self):
+        play_button = QPushButton("Play", self)
+        play_button.setGeometry(800, 585, 400, 90)
+        play_button.setStyleSheet("""
+            QPushButton {
+                background-color: #c5405f;
+                font: bold;
+                color: #F5F5DC;
+                font-family: 'Blockblueprint';
+                border: #060034;
+                font-size: 70px;
+            }
+            QPushButton:hover {
+                background-color: #F5F5DC;
+                color: #2E2E2E;
+            }
+        """)
+        play_button.clicked.connect(lambda: print("Play button clicked"))
+
+    def progress_bar(self):
+        self.progress_bar = QProgressBar(self)
+        self.progress_bar.setGeometry(60, 620, 620, 30)
+        self.progress_bar.setStyleSheet("""
+            QProgressBar {
+                background-color: #2E2E2E;
+                border: 1px solid gray;
+                border-radius: 5px;
+            }
+            QProgressBar::chunk {
+                background-color: #c5405f;
+                border-radius: 5px;
+            }
+        """)
+
+    def socials(self):
+        socials_container = QWidget(self)
+        socials_container.setGeometry(30, 30, 700, 70)
+        socials_container.setStyleSheet("background: transparent;")
+        layout = QHBoxLayout(socials_container)
+        layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        layout.setSpacing(20)
+
+        # Create social media buttons
+        discord_button = QPushButton("Discord", socials_container)
+        twitch_button = QPushButton("Twitch", socials_container)
+        youtube_button = QPushButton("YouTube", socials_container)
+
+        for button in [discord_button, twitch_button, youtube_button]:
+            button.setStyleSheet("""
+                QPushButton {
+                    background-color: #c5405f;
+                    font: bold;
+                    color: #F5F5DC;
+                    font-family: 'Blockblueprint';
+                    border: #060034;
+                    font-size: 25px;
+                }
+                QPushButton:hover {
+                    background-color: #F5F5DC;
+                    color: #2E2E2E;
+                }
+            """)
+            layout.addWidget(button)
 
 
 if __name__ == "__main__":
