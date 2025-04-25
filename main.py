@@ -13,6 +13,10 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(1280, 720)
         self.setMaximumSize(1280, 720)
 
+        # === Utils ===
+        self.oldPos = None  # For Window Movement
+        self.dragMainWindow()
+
         # === UI Widgets ===
 
         self.background()
@@ -160,6 +164,26 @@ class MainWindow(QMainWindow):
         layout.addWidget(scroll_label)
         scroll_content.setLayout(layout)
         scroll_area.setWidget(scroll_content)
+
+    def dragMainWindow(self):
+        def mousePressEvent(event):
+            if event.button() == Qt.MouseButton.LeftButton:
+                self.oldPos = event.globalPosition().toPoint()  # Convert to QPoint
+
+        def mouseMoveEvent(event):
+            if self.oldPos is not None:
+                delta = event.globalPosition().toPoint() - self.oldPos  # Convert to QPoint
+                self.move(self.x() + delta.x(), self.y() + delta.y())
+                self.oldPos = event.globalPosition().toPoint()  # Update position
+
+        def mouseReleaseEvent(event):
+            self.oldPos = None
+
+        # Assign the event handlers to the window
+        self.mousePressEvent = mousePressEvent
+        self.mouseMoveEvent = mouseMoveEvent
+        self.mouseReleaseEvent = mouseReleaseEvent
+        
 
 
 if __name__ == "__main__":
