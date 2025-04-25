@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(1280, 720)
         self.setMaximumSize(1280, 720)
         self.background()
-        self.ui()
+        self.news_box()
 
         # === DEBUG TOOL ===
         # Move the preview to the 2nd screen while testing
@@ -51,7 +51,7 @@ class MainWindow(QMainWindow):
         title.setGeometry(0, 10, 1280, 100)
         title.setWordWrap(True)
 
-    def ui(self):
+    def news_box(self):
         news = QGroupBox("News", self)
         news.setStyleSheet("""
             QGroupBox {
@@ -112,12 +112,19 @@ class MainWindow(QMainWindow):
 
         scroll_label.setText(changelog_text)
         scroll_label.setWordWrap(True)
-        scroll_label.setStyleSheet("background: transparent;")
+        scroll_label.setStyleSheet("""
+
+        QLabel {
+            color: #F5F5DC;
+            font-size: 20px;
+            font-family: 'Blockblueprint';
+            }
+
+        """)
 
         layout.addWidget(scroll_label)
         scroll_content.setLayout(layout)
         scroll_area.setWidget(scroll_content)
-
 
 
 if __name__ == "__main__":
