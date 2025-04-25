@@ -1,6 +1,6 @@
 import sys
 from PyQt6 import QtGui
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QGroupBox, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QGroupBox, QVBoxLayout, QWidget, QPushButton
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea
 import requests
@@ -8,13 +8,16 @@ import requests
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Celestial Odyssey Launcher")
-        self.setWindowIcon(QtGui.QIcon("assets/icon.ico"))
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self.setGeometry(100, 100, 1280, 720)
         self.setMinimumSize(1280, 720)
         self.setMaximumSize(1280, 720)
+
+        # === UI Widgets ===
+
         self.background()
         self.news_box()
+        self.system_buttons()
 
         # === DEBUG TOOL ===
         # Move the preview to the 2nd screen while testing
@@ -50,6 +53,38 @@ class MainWindow(QMainWindow):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setGeometry(0, 10, 1280, 100)
         title.setWordWrap(True)
+
+    def system_buttons(self):
+        self.minimize_button = QPushButton("-", self)
+        self.minimize_button.setGeometry(1200, 10, 30, 30)
+        self.minimize_button.setStyleSheet("""
+            QPushButton {
+                background-color: #2E2E2E;
+                color: #F5F5DC;
+                border: none;
+                font-size: 20px;
+            }
+            QPushButton:hover {
+                background-color: #F5F5DC;
+                color: #2E2E2E;
+            }
+        """)
+        self.close_button = QPushButton("X", self)
+        self.close_button.setGeometry(1240, 10, 30, 30)
+        self.close_button.setStyleSheet("""
+            QPushButton {
+                background-color: #2E2E2E;
+                color: #F5F5DC;
+                border: none;
+                font-size: 20px;
+            }
+            QPushButton:hover {
+                background-color: #F5F5DC;
+                color: #2E2E2E;
+            }
+        """)
+        self.minimize_button.clicked.connect(self.showMinimized)
+        self.close_button.clicked.connect(self.close)
 
     def news_box(self):
         news = QGroupBox("News", self)
