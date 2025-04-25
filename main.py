@@ -68,24 +68,47 @@ class MainWindow(QMainWindow):
             padding: 0 10px;
             }
         """)
-        news.setGeometry(60, 130, 320, 500)
-
-        # Create a scrollable text box
+        news.setGeometry(60, 130, 420, 420)
 
         scroll_area = QScrollArea(news)
-        scroll_area.setGeometry(10, 40, 300, 450)  # Adjust size to fit inside the GroupBox
+        scroll_area.setGeometry(5, 40, 405, 365)
         scroll_area.setWidgetResizable(True)
+        scroll_area.setStyleSheet("""
+            QScrollArea {
+                background: transparent;
+                border: none;
+            }
+            QScrollBar:vertical {
+                background: #2E2E2E;
+                width: 14px;
+                margin: 0px 0px 0px 0px;
+            }
+            QScrollBar::handle:vertical {
+                background: #F5F5DC;
+                min-height: 20px;
+            }
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: none;
+            }                         
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                background: none;
+                height: 0px;
+            }
+        """)
 
         scroll_content = QWidget()
+        scroll_content.setStyleSheet("background: transparent;")
+
         layout = QVBoxLayout(scroll_content)
         scroll_label = QLabel(scroll_content)
-        scroll_label.setText("This is a scrollable text box.\n" * 80)  # Example long text
+        scroll_label.setText("This is a scrollable text box.\n" * 80)
         scroll_label.setWordWrap(True)
+        scroll_label.setStyleSheet("background: transparent;")
 
         layout.addWidget(scroll_label)
         scroll_content.setLayout(layout)
-
         scroll_area.setWidget(scroll_content)
+
 
 
 if __name__ == "__main__":
