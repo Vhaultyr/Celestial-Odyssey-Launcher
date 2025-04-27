@@ -2,11 +2,11 @@
 
 ## General
 - [x] Set up a clean project structure.
-- [ ] Add a README file with project details.
+- [x] Add a README file with project details.
 
 ## UI
-- [ ] Create a news panel.
-- [ ] Add a background image.
+- [x] Create a news panel.
+- [x] Add a background image.
 - [ ] Add buttons for launching the game.
 
 ## Features
@@ -19,7 +19,7 @@
 - [ ] Test configuration loading and saving.
 - [ ] Test UI responsiveness.
 
-## Future Ideas
-- [ ] Add a settings menu.
+## Utils
+- [x] Add a settings menu.
 - [ ] Implement a modpack downloader.
-- [ ] Add a progress bar for updates.
+- [x] Add a progress bar for updates.
