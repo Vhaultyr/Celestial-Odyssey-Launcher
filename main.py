@@ -1,9 +1,10 @@
 import sys
-from PyQt6 import QtGui
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QGroupBox, QVBoxLayout, QWidget, QPushButton, QProgressBar, QHBoxLayout
+from PyQt6 import QtGui, QtCore
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QGroupBox, QVBoxLayout, QWidget, QPushButton, QProgressBar, QHBoxLayout, QComboBox
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QScrollArea
 import requests
+from configparser import ConfigParser
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -19,10 +20,13 @@ class MainWindow(QMainWindow):
         self.dragMainWindow()
         self.app_settings_button() # Settings Menu + Configuration
         self.system_buttons()
+        self.firstLaunch()
 
         # === UI Widgets ===
         self.news_box()
         self.game_buttons()
+        self.version_select()
+        self.on_version_selected("Low")  # Default selection
         self.play_or_update()
         self.progress_bar()
         self.socials()
@@ -42,8 +46,6 @@ class MainWindow(QMainWindow):
             self.move(geometry.x(), geometry.y())
         else:
             print("Second monitor not detected. Opening on the primary monitor.")
-
-        # === DEBUG TOOL ===
 
     def background(self):
         bg = QLabel(self)
@@ -118,10 +120,10 @@ class MainWindow(QMainWindow):
             padding: 0 10px;
             }
         """)
-        news.setGeometry(60, 130, 620, 420)
+        news.setGeometry(60, 150, 620, 360)
 
         scroll_area = QScrollArea(news)
-        scroll_area.setGeometry(5, 40, 605, 365)
+        scroll_area.setGeometry(5, 40, 605, 305)
         scroll_area.setWidgetResizable(True)
         scroll_area.setStyleSheet("""
             QScrollArea {
@@ -210,7 +212,12 @@ class MainWindow(QMainWindow):
                 background-color: #F5F5DC;
                 color: #2E2E2E;
             }
-""")
+        """)
+        self.open_settings.clicked.connect(self.open_settings_menu)
+
+    def open_settings_menu(self):
+        self.settings_window = SettingsMenu(parent=self)  # Pass MainWindow as the parent
+        self.settings_window.show()
 
     def game_buttons(self):
         # Create a container widget for the buttons
@@ -233,7 +240,6 @@ class MainWindow(QMainWindow):
             button.setStyleSheet("""
                 QPushButton {
                 background-color: #c5405f;
-                font: bold;
                 color: #F5F5DC;
                 font-family: 'Blockblueprint';
                 border: #060034;
@@ -256,11 +262,10 @@ class MainWindow(QMainWindow):
 
     def play_or_update(self):
         play_button = QPushButton("Play", self)
-        play_button.setGeometry(800, 585, 400, 90)
+        play_button.setGeometry(825, 585, 350, 90)
         play_button.setStyleSheet("""
             QPushButton {
                 background-color: #c5405f;
-                font: bold;
                 color: #F5F5DC;
                 font-family: 'Blockblueprint';
                 border: #060034;
@@ -288,6 +293,18 @@ class MainWindow(QMainWindow):
             }
         """)
 
+        # Add a label above the progress bar to display the status text
+        self.progress_label = QLabel("Initializing...", self)
+        self.progress_label.setGeometry(60, 590, 620, 30)  # Positioned above the progress bar
+        self.progress_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.progress_label.setStyleSheet("""
+            QLabel {
+                color: #F5F5DC;
+                font-size: 20px;
+                font-family: 'Blockblueprint';
+            }
+        """)
+
     def socials(self):
         socials_container = QWidget(self)
         socials_container.setGeometry(30, 30, 700, 70)
@@ -296,27 +313,180 @@ class MainWindow(QMainWindow):
         layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         layout.setSpacing(20)
 
-        # Create social media buttons
-        discord_button = QPushButton("Discord", socials_container)
-        twitch_button = QPushButton("Twitch", socials_container)
-        youtube_button = QPushButton("YouTube", socials_container)
+        # Create a button with an image
+        discord_button = QPushButton(socials_container)
+        discord_button.setIcon(QtGui.QIcon("assets/disc_icon.png"))  # Set the image as the button icon
+        discord_button.setIconSize(QtCore.QSize(64, 64))  # Adjust the size of the icon
+        discord_button.setStyleSheet("""
+            QPushButton {
+                background: transparent;  /* Remove background */
+                border: none;  /* Remove border */
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 0.1);  /* Optional hover effect */
+            }
+        """)
+        discord_button.clicked.connect(lambda: print("Discord button clicked"))  # Example action
 
-        for button in [discord_button, twitch_button, youtube_button]:
-            button.setStyleSheet("""
-                QPushButton {
-                    background-color: #c5405f;
-                    font: bold;
-                    color: #F5F5DC;
+        # Add the button to the layout
+        layout.addWidget(discord_button)
+
+    def version_select(self):
+        # Create a QComboBox for version selection
+        version_dropdown = QComboBox(self)
+        version_dropdown.setGeometry(825, 540, 350, 30)  # Positioned directly above the play/update button
+        version_dropdown.setStyleSheet("""
+            QComboBox {
+                background-color: #2E2E2E;
+                color: #F5F5DC;
+                border: 1px solid gray;
+                border-radius: 5px;
+                font-size: 30px;
+                font-family: 'Blockblueprint';
+                padding: 5px;
+            }
+            QComboBox QAbstractItemView {
+                background-color: #2E2E2E;
+                color: #F5F5DC;
+                selection-background-color: #c5405f;
+                selection-color: #F5F5DC;
+            }
+        """)
+
+        # Add options to the dropdown with tooltips
+        version_dropdown.addItem("Low")
+        version_dropdown.setItemData(0, "6 GB RAM Recommended - Optimized for older systems or low-end hardware.", Qt.ItemDataRole.ToolTipRole)
+        
+        version_dropdown.addItem("Ultra")
+        version_dropdown.setItemData(1, "8 GB RAM Recommended - Best visuals, recommended for high-end systems.", Qt.ItemDataRole.ToolTipRole)
+
+        # Connect the dropdown to a function to handle selection changes
+        version_dropdown.currentTextChanged.connect(self.on_version_selected)
+
+    def on_version_selected(self, selected_version):
+        # Handle the version selection
+        if selected_version == "Low":
+            print("Low version selected")
+            # Add logic for Low version here
+        elif selected_version == "Ultra":
+            print("Ultra version selected")
+            # Add logic for Ultra version here
+
+    def firstLaunch(self):
+        # Check if it's the first launch by reading the config.ini file
+
+        config = ConfigParser()
+        config_file = "config.ini"
+
+        # Check if the config file exists
+        try:
+            config.read(config_file)
+            first_launch = config.getboolean("Settings", "FirstLaunch", fallback=True)
+        except Exception as e:
+            print(f"Error reading config file: {e}")
+            first_launch = True
+
+        if first_launch:
+            print("First launch detected.")
+            # Update the config file to mark first launch as False
+            if not config.has_section("Settings"):
+                config.add_section("Settings")
+            config.set("Settings", "FirstLaunch", "False")
+            with open(config_file, "w") as file:
+                config.write(file)
+
+class SettingsMenu(QWidget):
+    def __init__(self, parent=None):
+        super().__init__()
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+        self.setGeometry(0, 0, 400, 300)
+        self.setStyleSheet("background-color: #2E2E2E; color: #F5F5DC; border: 1px solid gray;")
+        self.center_on_parent(parent)
+        self.dragSettingsMenu()
+
+    def center_on_parent(self, parent):
+        if parent:
+            # Ensure the size of the SettingsMenu is set before calculating its position
+            self.resize(400, 300)  # Explicitly set the size of the SettingsMenu
+
+            parent_geometry = parent.geometry()
+            x = parent_geometry.x() + (parent_geometry.width() - self.width()) // 2
+            y = parent_geometry.y() + (parent_geometry.height() - self.height()) // 2
+            self.move(x, y)
+
+    def dragSettingsMenu(self):
+        self.oldPos = None
+
+        def mousePressEvent(event):
+            if event.button() == Qt.MouseButton.LeftButton:
+                self.oldPos = event.globalPosition().toPoint()  # Convert to QPoint
+            super(SettingsMenu, self).mousePressEvent(event)
+
+        def mouseMoveEvent(event):
+            if self.oldPos is not None:
+                delta = event.globalPosition().toPoint() - self.oldPos  # Convert to QPoint
+                self.move(self.x() + delta.x(), self.y() + delta.y())
+                self.oldPos = event.globalPosition().toPoint()  # Update position
+            super(SettingsMenu, self).mouseMoveEvent(event)
+
+        def mouseReleaseEvent(event):
+            self.oldPos = None
+            super(SettingsMenu, self).mouseReleaseEvent(event)
+
+        # Bind the event handlers to the SettingsMenu instance
+        self.mousePressEvent = mousePressEvent
+        self.mouseMoveEvent = mouseMoveEvent
+        self.mouseReleaseEvent = mouseReleaseEvent
+
+        # Create a vertical layout
+        layout = QVBoxLayout(self)
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        layout.setSpacing(20)
+
+        # Add a title label
+        title_label = QLabel("Settings", self)
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title_label.setStyleSheet("""
+            QLabel {
+                font-size: 24px;
+                font-family: 'Blockblueprint';
+                font-weight: bold;
+            }
+        """)
+        layout.addWidget(title_label)
+
+        # Add example settings options
+        option1 = QLabel("Option 1: Placeholder", self)
+        option2 = QLabel("Option 2: Placeholder", self)
+        option3 = QLabel("Option 3: Placeholder", self)
+
+        for option in [option1, option2, option3]:
+            option.setStyleSheet("""
+                QLabel {
+                    font-size: 18px;
                     font-family: 'Blockblueprint';
-                    border: #060034;
-                    font-size: 25px;
-                }
-                QPushButton:hover {
-                    background-color: #F5F5DC;
-                    color: #2E2E2E;
                 }
             """)
-            layout.addWidget(button)
+            layout.addWidget(option)
+
+        # Add a close button
+        close_button = QPushButton("Close", self)
+        close_button.setStyleSheet("""
+            QPushButton {
+                background-color: #c5405f;
+                color: #F5F5DC;
+                font-family: 'Blockblueprint';
+                font-size: 18px;
+                border: none;
+                padding: 10px;
+            }
+            QPushButton:hover {
+                background-color: #F5F5DC;
+                color: #2E2E2E;
+            }
+        """)
+        close_button.clicked.connect(self.close)
+        layout.addWidget(close_button)
 
 
 if __name__ == "__main__":
