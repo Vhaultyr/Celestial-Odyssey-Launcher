@@ -1,25 +1,28 @@
 # TODO List for Celestial Odyssey Launcher
 
-## General
+## Main
+
+### General
 - [x] Set up a clean project structure.
 - [x] Add a README file with project details.
 
-## UI
+### UI
 - [x] Create a news panel.
 - [x] Add a background image.
-- [ ] Add buttons for launching the game.
+- [x] Add buttons for launching the game.
 
-## Features
+### Utils
+- [x] Add a settings menu.
+- [x] Add a progress bar for updates.
+- [ ] Implement a modpack downloader.
+
+### Features
 - [ ] Validate Minecraft directory.
 - [ ] Load and save configuration settings.
 - [ ] Implement version checking.
 
-## Testing
-- [ ] Test directory validation.
-- [ ] Test configuration loading and saving.
-- [ ] Test UI responsiveness.
+## Dailies
 
-## Utils
-- [x] Add a settings menu.
-- [ ] Implement a modpack downloader.
-- [x] Add a progress bar for updates.
+### Cleanup | 2025-05-14
+ - [x] Readup the documentation on regions to organize code
+ - [x] Organize main.py blocks in regions

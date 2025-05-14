@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QScrollArea
 import requests
 from configparser import ConfigParser
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow): # Setup for the Main Window + Configurations
     def __init__(self):
         super().__init__()
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
@@ -15,27 +15,23 @@ class MainWindow(QMainWindow):
         self.setMaximumSize(1280, 720)
         self.background()
 
-        # === Utils ===
+# region Initialize Main Window
         self.oldPos = None  # For Window Movement
         self.dragMainWindow()
         self.app_settings_button() # Settings Menu + Configuration
-        self.system_buttons()
-        self.firstLaunch()
+        self.system_buttons()   # Minimize + Close Buttons
+        #self.move_to_second_monitor()  # Debug Tool - Move Client to Second Monitor 
 
-        # === UI Widgets ===
         self.news_box()
-        self.game_buttons()
-        self.version_select()
-        self.on_version_selected("Low")  # Default selection
-        self.play_or_update()
-        self.progress_bar()
-        self.socials()
+        self.game_buttons() # Update / Play Buttons to Launch Game
+        self.version_select() # Select which version the user wants to use
+        self.on_version_selected("Low")  # Default version
+        self.play_or_update() # Play / Update Button
+        self.progress_bar() # Progress Bar for Updates
+        self.socials() # Social Media Buttons
+# endregion
 
-        # === DEBUG TOOL ===
-        # Move the preview to the 2nd screen while testing
-
-        self.move_to_second_monitor()
-
+# region Debug Tools
     def move_to_second_monitor(self):
         # Get the list of screens
         screens = QApplication.screens()
@@ -46,7 +42,9 @@ class MainWindow(QMainWindow):
             self.move(geometry.x(), geometry.y())
         else:
             print("Second monitor not detected. Opening on the primary monitor.")
+# endregion
 
+# region Main Window Functions
     def background(self):
         bg = QLabel(self)
         bg.setPixmap(QtGui.QPixmap("assets/bg.png"))
@@ -64,7 +62,6 @@ class MainWindow(QMainWindow):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title.setGeometry(0, 10, 1280, 100)
         title.setWordWrap(True)
-
     def system_buttons(self):
         self.minimize_button = QPushButton("-", self)
         self.minimize_button.setGeometry(1200, 10, 30, 30)
@@ -100,7 +97,6 @@ class MainWindow(QMainWindow):
         """)
         self.minimize_button.clicked.connect(self.showMinimized)
         self.close_button.clicked.connect(self.close)
-
     def news_box(self):
         news = QGroupBox("News", self)
         news.setStyleSheet("""
@@ -176,7 +172,6 @@ class MainWindow(QMainWindow):
         layout.addWidget(scroll_label)
         scroll_content.setLayout(layout)
         scroll_area.setWidget(scroll_content)
-
     def dragMainWindow(self):
         def mousePressEvent(event):
             if event.button() == Qt.MouseButton.LeftButton:
@@ -194,8 +189,7 @@ class MainWindow(QMainWindow):
         # Assign the event handlers to the window
         self.mousePressEvent = mousePressEvent
         self.mouseMoveEvent = mouseMoveEvent
-        self.mouseReleaseEvent = mouseReleaseEvent
-        
+        self.mouseReleaseEvent = mouseReleaseEvent       
     def app_settings_button(self):
         self.open_settings = QPushButton("Settings", self)
         self.open_settings.setGeometry(1058, 10, 130, 30)
@@ -214,11 +208,9 @@ class MainWindow(QMainWindow):
             }
         """)
         self.open_settings.clicked.connect(self.open_settings_menu)
-
     def open_settings_menu(self):
         self.settings_window = SettingsMenu(parent=self)  # Pass MainWindow as the parent
         self.settings_window.show()
-
     def game_buttons(self):
         # Create a container widget for the buttons
         button_container = QWidget(self)
@@ -259,7 +251,6 @@ class MainWindow(QMainWindow):
         mods_button.clicked.connect(lambda: print("Mods Button clicked"))
         packs_button.clicked.connect(lambda: print("Packs Button clicked"))
         about_button.clicked.connect(lambda: print("About Us clicked"))
-
     def play_or_update(self):
         play_button = QPushButton("Play", self)
         play_button.setGeometry(825, 585, 350, 90)
@@ -277,7 +268,6 @@ class MainWindow(QMainWindow):
             }
         """)
         play_button.clicked.connect(lambda: print("Play button clicked"))
-
     def progress_bar(self):
         self.progress_bar = QProgressBar(self)
         self.progress_bar.setGeometry(60, 620, 620, 30)
@@ -304,7 +294,6 @@ class MainWindow(QMainWindow):
                 font-family: 'Blockblueprint';
             }
         """)
-
     def socials(self):
         socials_container = QWidget(self)
         socials_container.setGeometry(30, 30, 700, 70)
@@ -330,7 +319,6 @@ class MainWindow(QMainWindow):
 
         # Add the button to the layout
         layout.addWidget(discord_button)
-
     def version_select(self):
         # Create a QComboBox for version selection
         version_dropdown = QComboBox(self)
@@ -362,7 +350,6 @@ class MainWindow(QMainWindow):
 
         # Connect the dropdown to a function to handle selection changes
         version_dropdown.currentTextChanged.connect(self.on_version_selected)
-
     def on_version_selected(self, selected_version):
         # Handle the version selection
         if selected_version == "Low":
@@ -371,29 +358,7 @@ class MainWindow(QMainWindow):
         elif selected_version == "Ultra":
             print("Ultra version selected")
             # Add logic for Ultra version here
-
-    def firstLaunch(self):
-        # Check if it's the first launch by reading the config.ini file
-
-        config = ConfigParser()
-        config_file = "config.ini"
-
-        # Check if the config file exists
-        try:
-            config.read(config_file)
-            first_launch = config.getboolean("Settings", "FirstLaunch", fallback=True)
-        except Exception as e:
-            print(f"Error reading config file: {e}")
-            first_launch = True
-
-        if first_launch:
-            print("First launch detected.")
-            # Update the config file to mark first launch as False
-            if not config.has_section("Settings"):
-                config.add_section("Settings")
-            config.set("Settings", "FirstLaunch", "False")
-            with open(config_file, "w") as file:
-                config.write(file)
+# endregion
 
 class SettingsMenu(QWidget):
     def __init__(self, parent=None):
@@ -404,6 +369,7 @@ class SettingsMenu(QWidget):
         self.center_on_parent(parent)
         self.dragSettingsMenu()
 
+        # self.SettingsButtons()
     def center_on_parent(self, parent):
         if parent:
             # Ensure the size of the SettingsMenu is set before calculating its position
@@ -487,7 +453,6 @@ class SettingsMenu(QWidget):
         """)
         close_button.clicked.connect(self.close)
         layout.addWidget(close_button)
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
