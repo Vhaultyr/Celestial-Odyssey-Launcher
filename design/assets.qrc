@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="main.window">
-    <file>../assets/icon.ico</file>
-    <file>../assets/bg.png</file>
-  </qresource>
-</RCC>
