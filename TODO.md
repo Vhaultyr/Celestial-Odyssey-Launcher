@@ -26,3 +26,4 @@
 ### Cleanup | 2025-05-14
  - [x] Readup the documentation on regions to organize code
  - [x] Organize main.py blocks in regions
+ - [x] Got around to fixing the permissions issue with GitHub so I can now pull & push from VSCode, wow...
